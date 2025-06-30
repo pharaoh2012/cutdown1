@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>炫酷倒计时动画</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background: linear-gradient(45deg, #1a1a2e, #16213e, #0f3460);
+        background-size: 400% 400%;
+        animation: gradientShift 8s ease infinite;
+        font-family: "Arial", sans-serif;
+        overflow: hidden;
+      }
+
+      @keyframes gradientShift {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .countdown-container {
+        position: relative;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .countdown-circle {
+        position: relative;
+        width: 300px;
+        height: 300px;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4, #45b7d1, #96ceb4);
+        background-size: 400% 400%;
+        animation: gradientRotate 3s ease infinite;
+        padding: 8px;
+        box-shadow: 0 0 50px rgba(255, 107, 107, 0.3),
+          0 0 100px rgba(78, 205, 196, 0.2),
+          inset 0 0 50px rgba(255, 255, 255, 0.1);
+      }
+
+      @keyframes gradientRotate {
+        0% {
+          background-position: 0% 50%;
+        }
+        50% {
+          background-position: 100% 50%;
+        }
+        100% {
+          background-position: 0% 50%;
+        }
+      }
+
+      .countdown-inner {
+        width: 100%;
+        height: 100%;
+        border-radius: 50%;
+        background: radial-gradient(circle, #1a1a2e, #0f1419);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .countdown-number {
+        font-size: 14rem;
+        font-weight: bold;
+        color: #fff;
+        text-shadow: 0 0 20px rgba(255, 255, 255, 0.8),
+          0 0 40px rgba(78, 205, 196, 0.6), 0 0 60px rgba(255, 107, 107, 0.4);
+        animation: pulse 1s ease-in-out infinite alternate;
+        z-index: 10;
+        line-height: 1;
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+          text-shadow: 0 0 30px rgba(255, 255, 255, 0.8),
+            0 0 50px rgba(78, 205, 196, 0.6), 0 0 80px rgba(255, 107, 107, 0.4);
+        }
+        100% {
+          transform: scale(1.05);
+          text-shadow: 0 0 40px rgba(255, 255, 255, 1),
+            0 0 60px rgba(78, 205, 196, 0.8), 0 0 90px rgba(255, 107, 107, 0.6);
+        }
+      }
+
+      .progress-ring {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        transform: rotate(-90deg);
+      }
+
+      .progress-ring-circle {
+        fill: none;
+        stroke: url(#gradient);
+        stroke-width: 6;
+        stroke-linecap: round;
+        stroke-dasharray: 942; /* 2 * π * 150 */
+        stroke-dashoffset: 942;
+        animation: progressAnimation 15s linear forwards;
+        filter: drop-shadow(0 0 10px rgba(78, 205, 196, 0.8));
+      }
+
+      @keyframes progressAnimation {
+        to {
+          stroke-dashoffset: 0;
+        }
+      }
+
+      .particles {
+        position: absolute;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+
+      .particle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: radial-gradient(circle, #4ecdc4, transparent);
+        border-radius: 50%;
+        animation: float 3s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+          opacity: 0;
+        }
+        50% {
+          transform: translateY(-100px) rotate(180deg);
+          opacity: 1;
+        }
+      }
+
+      .countdown-text {
+        margin-top: 30px;
+        font-size: 1.5rem;
+        color: #4ecdc4;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        text-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+        animation: textGlow 2s ease-in-out infinite alternate;
+      }
+
+      @keyframes textGlow {
+        0% {
+          text-shadow: 0 0 20px rgba(78, 205, 196, 0.6);
+        }
+        100% {
+          text-shadow: 0 0 30px rgba(78, 205, 196, 1);
+        }
+      }
+
+      .finished {
+        animation: celebration 1s ease-in-out;
+      }
+
+      @keyframes celebration {
+        0%,
+        100% {
+          transform: scale(1);
+        }
+        25% {
+          transform: scale(1.2) rotate(5deg);
+        }
+        50% {
+          transform: scale(1.1) rotate(-5deg);
+        }
+        75% {
+          transform: scale(1.2) rotate(5deg);
+        }
+      }
+
+      .restart-btn {
+        margin-top: 30px;
+        padding: 12px 30px;
+        background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+        border: none;
+        border-radius: 25px;
+        color: white;
+        font-size: 1rem;
+        font-weight: bold;
+        cursor: pointer;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        opacity: 0;
+        transform: translateY(20px);
+      }
+
+      .restart-btn.show {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      .restart-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
+      }
+      /* 更新后的进度条样式 */
+      .progress-container {
+        width: 80%;
+        margin: 15px auto;
+        position: relative;
+      }
+
+      .progress-label {
+        color: #4ecdc4;
+        font-size: 0.9rem;
+        margin-bottom: 8px;
+        display: flex;
+        justify-content: space-between;
+        text-shadow: 0 0 15px rgba(78, 205, 196, 0.6);
+      }
+
+      .progress-bar {
+        height: 12px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .progress-fill {
+        height: 100%;
+        background: linear-gradient(
+          90deg,
+          #ff6b6b 0%,
+          #4ecdc4 50%,
+          #45b7d1 100%
+        );
+        width: 0%;
+        transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        position: relative;
+      }
+
+      .progress-fill::after {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -200%;
+        width: 200%;
+        height: 100%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        animation: shine 1.5s infinite;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="countdown-container">
+      <div class="countdown-circle">
+        <div class="countdown-inner">
+          <svg class="progress-ring" width="300" height="300">
+            <defs>
+              <linearGradient id="gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop
+                  offset="0%"
+                  style="stop-color: #ff6b6b; stop-opacity: 1"
+                />
+                <stop
+                  offset="50%"
+                  style="stop-color: #4ecdc4; stop-opacity: 1"
+                />
+                <stop
+                  offset="100%"
+                  style="stop-color: #45b7d1; stop-opacity: 1"
+                />
+              </linearGradient>
+            </defs>
+            <circle
+              class="progress-ring-circle"
+              cx="150"
+              cy="150"
+              r="150"
+            ></circle>
+          </svg>
+          <div class="countdown-number" id="countdown"> </div>
+          <div class="particles" id="particles"></div>
+        </div>
+      </div>
+      <div class="countdown-text" id="countdownText">倒计时进行中</div>
+      <!-- 更新后的进度条结构 -->
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>当前阶段</span>
+          <span id="rundownLabel">[1/3]</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="rundownProgress"></div>
+        </div>
+      </div>
+
+      <div class="progress-container">
+        <div class="progress-label">
+          <span>总进度</span>
+          <span id="roundLabel">[0/10]</span>
+        </div>
+        <div class="progress-bar">
+          <div class="progress-fill" id="roundProgress"></div>
+        </div>
+      </div>
+      <button class="restart-btn" id="restartBtn" onclick="startCountdown()">
+        重新开始
+      </button>
+    </div>
+
+    <script>
+      let rundowns = [
+        { cd: 10, text: "吸气", color: "red" },
+        { cd: 10, text: "呼气", color: "green" },
+        //  { cd: 5, text: "放松" },
+      ];
+      let MaxCountdown = 10;
+
+      let rundownIndex = 0;
+      let roundNumber = 0; // 新增的轮次计数器
+      let countdownInterval;
+      let currentCount = 10;
+      let beginTime = 0;
+
+      function createParticles() {
+        const particlesContainer = document.getElementById("particles");
+        particlesContainer.innerHTML = "";
+
+        for (let i = 0; i < 20; i++) {
+          const particle = document.createElement("div");
+          particle.className = "particle";
+          particle.style.left = Math.random() * 100 + "%";
+          particle.style.animationDelay = Math.random() * 3 + "s";
+          particle.style.animationDuration = Math.random() * 2 + 2 + "s";
+          particlesContainer.appendChild(particle);
+        }
+      }
+
+      const container = document.querySelector(".countdown-container");
+
+      function updateCountdown() {
+        // 更新进度计算逻辑
+        const rundownProgress = ((rundownIndex + 1) / rundowns.length) * 100; // 最大3个阶段
+        const roundProgress = ((roundNumber + 1) / MaxCountdown) * 100;
+
+        document.getElementById("rundownLabel").textContent = `[${
+          rundownIndex + 1
+        }/${rundowns.length}]`;
+
+        document.getElementById("roundLabel").textContent = `[${
+          roundNumber + 1
+        }/${MaxCountdown}]`;
+
+        document.getElementById(
+          "rundownProgress"
+        ).style.width = `${rundownProgress}%`;
+        document.getElementById(
+          "roundProgress"
+        ).style.width = `${roundProgress}%`;
+        const countdownElement = document.getElementById("countdown");
+        const countdownText = document.getElementById("countdownText");
+        const restartBtn = document.getElementById("restartBtn");
+
+        countdownElement.textContent = currentCount;
+
+        if (currentCount === 0) {
+          clearInterval(countdownInterval);
+          countdownElement.textContent = "✔";
+          countdownText.textContent = "倒计时结束";
+          container.classList.add("finished");
+          rundownIndex++;
+          if (rundownIndex < rundowns.length) {
+            setTimeout(() => {
+              startCountdown();
+            }, 1000);
+          } else {
+            roundNumber++; // 增加轮次计数器
+            if (roundNumber < MaxCountdown) {
+              console.log("开始下一轮:" + roundNumber);
+              rundownIndex = 0; // 重置倒计时索引
+              console.log("Round " + roundNumber + " finished.");
+              setTimeout(() => {
+                startCountdown();
+              }, 1000);
+            } else {
+              console.log("All rounds finished.");
+              // 创建庆祝效果
+              const endTime = Date.now();
+              const totalTime = Math.round((endTime - beginTime) / 1000);
+              console.log("总用时：" + totalTime + "秒");
+            }
+          }
+          // restartBtn.classList.add('show');
+
+          // 创建庆祝效果
+          setTimeout(() => {
+            container.classList.remove("finished");
+          }, 1000);
+        } else {
+          currentCount--;
+        }
+      }
+
+      function startCountdown() {
+        // rundownIndex = 0;
+        currentCount = rundowns[rundownIndex].cd;
+        const countdownText = document.getElementById("countdownText");
+        const restartBtn = document.getElementById("restartBtn");
+        const container = document.querySelector(".countdown-container");
+        const progressCircle = document.querySelector(".progress-ring-circle");
+
+        countdownText.textContent =
+          rundowns[rundownIndex].text + rundowns[rundownIndex].cd + "秒";
+        restartBtn.classList.remove("show");
+        container.classList.remove("finished");
+        document.getElementById("countdown").style.color =
+          rundowns[rundownIndex].color;
+
+        // 重置进度条动画
+        progressCircle.style.animation = "none";
+        progressCircle.offsetHeight; // 触发重排
+        progressCircle.style.animation =
+          "progressAnimation 15s linear forwards";
+
+        // 创建粒子效果
+        createParticles();
+
+        // 立即显示初始数字
+        updateCountdown();
+
+        // 开始倒计时
+        countdownInterval = setInterval(updateCountdown, 1000);
+      }
+
+      // 页面加载时自动开始倒计时
+      window.addEventListener("load", async () => {
+        let path = location.hash || location.search;
+        if (path) {
+          path = path.substring(1);
+          const config = await fetch(path).then((r) => r.json());
+          document.title = config.title;
+          MaxCountdown = config.MaxCountdown;
+          rundowns = config.countdowns;
+        }
+
+        beginTime = Date.now();
+        startCountdown();
+      });
+    </script>
+  </body>
+</html>
