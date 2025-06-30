@@ -122,13 +122,19 @@ function startCountdown() {
 
 // 页面加载时自动开始倒计时
 window.addEventListener("load", async () => {
-    let path = location.hash || location.search;
-    if (path) {
-        path = path.substring(1);
-        const config = await fetch(path).then((r) => r.json());
-        document.title = config.title;
-        MaxCountdown = config.MaxCountdown;
-        rundowns = config.countdowns;
+    let u = new URL(location.href);
+    let max = u.searchParams.get("max");
+    if (max) {
+        MaxCountdown = +max;
+    }
+    let title = u.searchParams.get("title");
+    if (title) document.title = title;
+    let cd = u.searchParams.get("cd");
+    if (cd) {
+        rundowns = cd.split(';').map((item, i) => {
+            let ii = item.split(',');
+            return { cd: +ii[0], text: ii[1] ?? `第${i + 1}节`, color: COLORS[i % 7] };
+        });
     }
 
     beginTime = Date.now();
