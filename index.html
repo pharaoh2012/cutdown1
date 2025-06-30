@@ -7,6 +7,8 @@
     <link rel="stylesheet" href="index.css" />
   </head>
   <body>
+    <div id="time-difference">00:00</div>
+    <div id="overall_progress">0/10</div>
     <div class="countdown-container">
       <div class="countdown-circle">
         <div class="countdown-inner">
@@ -59,7 +61,7 @@
           <div class="progress-fill" id="roundProgress"></div>
         </div>
       </div>
-      <button class="restart-btn" id="restartBtn" onclick="startCountdown()">
+      <button class="restart-btn show" id="restartBtn" onclick="restart()">
         重新开始
       </button>
     </div>

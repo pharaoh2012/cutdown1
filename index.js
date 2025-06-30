@@ -12,6 +12,14 @@ let countdownInterval;
 let currentCount = 10;
 let beginTime = 0;
 
+function updateTimeDifference() {
+    const now = Date.now();
+    const difference = Math.round((now - beginTime) / 1000);
+    const minutes = Math.floor(difference / 60).toString().padStart(2, '0');
+    const seconds = (difference % 60).toString().padStart(2, '0');
+    document.getElementById('time-difference').textContent = `${minutes}:${seconds}`;
+}
+
 function createParticles() {
     const particlesContainer = document.getElementById("particles");
     particlesContainer.innerHTML = "";
@@ -33,11 +41,14 @@ function updateCountdown() {
     const rundownProgress = ((rundownIndex + 1) / rundowns.length) * 100; // 最大3个阶段
     const roundProgress = ((roundNumber + 1) / MaxCountdown) * 100;
 
+    updateTimeDifference();
+
     document.getElementById("rundownLabel").textContent = `[${rundownIndex + 1
         }/${rundowns.length}]`;
 
-    document.getElementById("roundLabel").textContent = `[${roundNumber + 1
-        }/${MaxCountdown}]`;
+    const process = `[${roundNumber + 1}/${MaxCountdown}]`
+    document.getElementById("roundLabel").textContent = process;
+    document.getElementById("overall_progress").textContent = process;
 
     document.getElementById(
         "rundownProgress"
@@ -99,7 +110,7 @@ function startCountdown() {
 
     countdownText.textContent =
         rundowns[rundownIndex].text + rundowns[rundownIndex].cd + "秒";
-    restartBtn.classList.remove("show");
+    // restartBtn.classList.remove("show");
     container.classList.remove("finished");
     document.getElementById("countdown").style.color =
         rundowns[rundownIndex].color;
@@ -137,6 +148,13 @@ window.addEventListener("load", async () => {
         });
     }
 
-    beginTime = Date.now();
-    startCountdown();
+    restart();
 });
+
+function restart() {
+    rundownIndex = 0;
+    roundNumber = 0;
+    beginTime = Date.now();
+    clearInterval(countdownInterval);
+    startCountdown();
+}
