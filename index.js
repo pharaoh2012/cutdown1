@@ -83,6 +83,7 @@ function updateCountdown() {
                 }, 1000);
             } else {
                 console.log("All rounds finished.");
+                tts("全部完成！")
                 // 创建庆祝效果
                 const endTime = Date.now();
                 const totalTime = Math.round((endTime - beginTime) / 1000);
@@ -152,9 +153,48 @@ window.addEventListener("load", async () => {
 });
 
 function restart() {
+    tts("开始")
     rundownIndex = 0;
     roundNumber = 0;
     beginTime = Date.now();
     clearInterval(countdownInterval);
     startCountdown();
+}
+
+/**
+ * 文本转语音函数（兼容主流浏览器）
+ * @param {string} text - 待转换的文本（支持中英文）
+ * @param {object} [options] - 可配置参数
+ * @param {number} [options.rate=1] - 语速 (0.1~10, 默认1)
+ * @param {number} [options.pitch=1] - 音调 (0~2, 默认1)
+ * @param {number} [options.volume=1] - 音量 (0~1, 默认1)
+ * @param {string} [options.lang='zh-CN'] - 语言编码 (如 'en-US')
+ */
+function tts(text, options = {}) {
+  // 1. 环境检测
+  if (!('speechSynthesis' in window)) {
+    console.error('浏览器不支持语音合成功能');
+    return;
+  }
+
+  // 2. 参数合并与默认值设置
+  const { rate = 1, pitch = 1, volume = 1, lang = 'zh-CN' } = options;
+
+  // 3. 创建语音实例
+  const utterance = new SpeechSynthesisUtterance(text);
+  utterance.lang = lang;
+  utterance.rate = Math.max(0.1, Math.min(10, rate)); // 限制有效范围
+  utterance.pitch = Math.max(0, Math.min(2, pitch));
+  utterance.volume = Math.max(0, Math.min(1, volume));
+
+  // 4. 播放控制（停止当前语音避免重叠）
+  window.speechSynthesis.cancel();
+
+  // 5. 事件监听
+  utterance.onstart = () => console.log('语音开始播放');
+  utterance.onend = () => console.log('语音播放结束');
+  utterance.onerror = (e) => console.error('语音播放错误:', e.error);
+
+  // 6. 播放语音
+  window.speechSynthesis.speak(utterance);
 }
