@@ -111,6 +111,7 @@ function startCountdown() {
 
     countdownText.textContent =
         rundowns[rundownIndex].text + rundowns[rundownIndex].cd + "秒";
+    tts(rundowns[rundownIndex].text)
     // restartBtn.classList.remove("show");
     container.classList.remove("finished");
     document.getElementById("countdown").style.color =
