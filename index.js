@@ -37,6 +37,7 @@ function createParticles() {
 const container = document.querySelector(".countdown-container");
 
 function updateCountdown() {
+    enableWakeLock();
     // 更新进度计算逻辑
     const rundownProgress = ((rundownIndex + 1) / rundowns.length) * 100; // 最大3个阶段
     const roundProgress = ((roundNumber + 1) / MaxCountdown) * 100;
@@ -88,6 +89,7 @@ function updateCountdown() {
                 const endTime = Date.now();
                 const totalTime = Math.round((endTime - beginTime) / 1000);
                 console.log("总用时：" + totalTime + "秒");
+                releaseWakeLock();
             }
         }
         // restartBtn.classList.add('show');
@@ -155,6 +157,7 @@ window.addEventListener("load", async () => {
 
 function restart() {
     tts("开始")
+    enableWakeLock();
     rundownIndex = 0;
     roundNumber = 0;
     beginTime = Date.now();
@@ -172,30 +175,51 @@ function restart() {
  * @param {string} [options.lang='zh-CN'] - 语言编码 (如 'en-US')
  */
 function tts(text, options = {}) {
-  // 1. 环境检测
-  if (!('speechSynthesis' in window)) {
-    console.error('浏览器不支持语音合成功能');
-    return;
-  }
+    // 1. 环境检测
+    if (!('speechSynthesis' in window)) {
+        console.error('浏览器不支持语音合成功能');
+        return;
+    }
 
-  // 2. 参数合并与默认值设置
-  const { rate = 1, pitch = 1, volume = 1, lang = 'zh-CN' } = options;
+    // 2. 参数合并与默认值设置
+    const { rate = 1, pitch = 1, volume = 1, lang = 'zh-CN' } = options;
 
-  // 3. 创建语音实例
-  const utterance = new SpeechSynthesisUtterance(text);
-  utterance.lang = lang;
-  utterance.rate = Math.max(0.1, Math.min(10, rate)); // 限制有效范围
-  utterance.pitch = Math.max(0, Math.min(2, pitch));
-  utterance.volume = Math.max(0, Math.min(1, volume));
+    // 3. 创建语音实例
+    const utterance = new SpeechSynthesisUtterance(text);
+    utterance.lang = lang;
+    utterance.rate = Math.max(0.1, Math.min(10, rate)); // 限制有效范围
+    utterance.pitch = Math.max(0, Math.min(2, pitch));
+    utterance.volume = Math.max(0, Math.min(1, volume));
 
-  // 4. 播放控制（停止当前语音避免重叠）
-  window.speechSynthesis.cancel();
+    // 4. 播放控制（停止当前语音避免重叠）
+    window.speechSynthesis.cancel();
 
-  // 5. 事件监听
-  utterance.onstart = () => console.log('语音开始播放');
-  utterance.onend = () => console.log('语音播放结束');
-  utterance.onerror = (e) => console.error('语音播放错误:', e.error);
+    // 5. 事件监听
+    utterance.onstart = () => console.log('语音开始播放');
+    utterance.onend = () => console.log('语音播放结束');
+    utterance.onerror = (e) => console.error('语音播放错误:', e.error);
 
-  // 6. 播放语音
-  window.speechSynthesis.speak(utterance);
+    // 6. 播放语音
+    window.speechSynthesis.speak(utterance);
 }
+
+let wakeLock;
+async function enableWakeLock() {
+    if (wakeLock?.released === false) return;
+    if ('wakeLock' in navigator) {
+        try {
+            wakeLock = await navigator.wakeLock.request('screen');
+        } catch (err) {
+            console.error('唤醒失败:', err);
+        }
+    }
+}
+
+async function releaseWakeLock() {
+    if (wakeLock) {
+        if (wakeLock.released === false) await wakeLock.release();
+    }
+}
+
+
+// enableWakeLock();
