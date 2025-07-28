@@ -1,4 +1,4 @@
-const CACHE_NAME = 'countdown-app-cache-v2';
+const CACHE_NAME = 'countdown-v2025-07-28';
 const urlsToCache = [
     '/',
     '/index.html',
