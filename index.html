@@ -9,6 +9,7 @@
   <body>
     <div id="time-difference">00:00</div>
     <div id="overall_progress">0/10</div>
+    <!-- 移除原有的 ttsSwitch 按钮 -->
     <div class="countdown-container">
       <div class="countdown-circle">
         <div class="countdown-inner">
@@ -64,11 +65,15 @@
       <button class="restart-btn show" id="restartBtn" onclick="restart()">
         重新开始
       </button>
+      <div class="tts-switch-container">
+        <label for="ttsCheckbox">是否语音播报</label>
+        <input type="checkbox" id="ttsCheckbox" class="tts-checkbox">
+      </div>
     </div>
 
     <script src="./index.js"></script>
     <script>
-      if ('serviceWorker' in navigator) {
+      if ('serviceWorker' in navigator && location.hostname !== '127.0.0.1') {
         window.addEventListener('load', () => {
           navigator.serviceWorker.register('/service-worker.js')
             .then((registration) => {

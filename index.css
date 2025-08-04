@@ -280,3 +280,44 @@ body {
   color: white;
   font-size: 2rem;
 }
+
+.tts-switch-container {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+}
+
+.tts-checkbox {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 60px;
+  height: 30px;
+  background-color: #ccc;
+  border-radius: 15px;
+  position: relative;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tts-checkbox::before {
+  content: '';
+  position: absolute;
+  width: 26px;
+  height: 26px;
+  background-color: white;
+  border-radius: 50%;
+  top: 2px;
+  left: 2px;
+  transition: transform 0.3s;
+}
+
+.tts-checkbox:checked {
+  background-color: #4ecdc4;
+}
+
+.tts-checkbox:checked::before {
+  transform: translateX(30px);
+}

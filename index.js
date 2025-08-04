@@ -11,6 +11,7 @@ let roundNumber = 0; // 新增的轮次计数器
 let countdownInterval;
 let currentCount = 10;
 let beginTime = 0;
+let isTts = false; // 是否启用TTS
 
 function updateTimeDifference() {
     const now = Date.now();
@@ -174,7 +175,17 @@ function restart() {
  * @param {number} [options.volume=1] - 音量 (0~1, 默认1)
  * @param {string} [options.lang='zh-CN'] - 语言编码 (如 'en-US')
  */
+// 添加语音播报开关点击事件
+window.addEventListener('load', () => {
+    const ttsCheckbox = document.getElementById('ttsCheckbox');
+    
+    ttsCheckbox.addEventListener('change', () => {
+        isTts = ttsCheckbox.checked;
+    });
+});
+
 function tts(text, options = {}) {
+    if (!isTts) return;
     // 1. 环境检测
     if (!('speechSynthesis' in window)) {
         console.error('浏览器不支持语音合成功能');
@@ -223,3 +234,17 @@ async function releaseWakeLock() {
 
 
 // enableWakeLock();
+
+// 添加语音播报开关
+const ttsSwitch = document.createElement('button');
+ttsSwitch.textContent = '是否语音播报: 关闭';
+ttsSwitch.style.position = 'fixed';
+ttsSwitch.style.top = '10px';
+ttsSwitch.style.right = '10px';
+ttsSwitch.style.zIndex = '1000';
+document.body.appendChild(ttsSwitch);
+
+ttsSwitch.addEventListener('click', () => {
+    isTts = !isTts;
+    ttsSwitch.textContent = `是否语音播报: ${isTts ? '开启' : '关闭'}`;
+});
