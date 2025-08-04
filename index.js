@@ -232,6 +232,10 @@ async function releaseWakeLock() {
     }
 }
 
+document.getElementById('ttsCheckbox').addEventListener('change', (event) => {
+    isTts = event.target.checked;
+    console.log('isTts:', isTts);   
+});
 
 // enableWakeLock();
 
