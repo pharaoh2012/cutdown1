@@ -11,7 +11,7 @@ let roundNumber = 0; // 新增的轮次计数器
 let countdownInterval;
 let currentCount = 10;
 let beginTime = 0;
-let isTts = false; // 是否启用TTS
+let isTts = localStorage.getItem('isTts') !== 'false'; // 是否启用TTS
 
 function updateTimeDifference() {
     const now = Date.now();
@@ -234,8 +234,11 @@ async function releaseWakeLock() {
 
 document.getElementById('ttsCheckbox').addEventListener('change', (event) => {
     isTts = event.target.checked;
+    localStorage.setItem('isTts', isTts);
     console.log('isTts:', isTts);   
 });
+
+document.getElementById('ttsCheckbox').checked = isTts;
 
 // enableWakeLock();
 
