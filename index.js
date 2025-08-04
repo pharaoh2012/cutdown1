@@ -235,16 +235,3 @@ async function releaseWakeLock() {
 
 // enableWakeLock();
 
-// 添加语音播报开关
-const ttsSwitch = document.createElement('button');
-ttsSwitch.textContent = '是否语音播报: 关闭';
-ttsSwitch.style.position = 'fixed';
-ttsSwitch.style.top = '10px';
-ttsSwitch.style.right = '10px';
-ttsSwitch.style.zIndex = '1000';
-document.body.appendChild(ttsSwitch);
-
-ttsSwitch.addEventListener('click', () => {
-    isTts = !isTts;
-    ttsSwitch.textContent = `是否语音播报: ${isTts ? '开启' : '关闭'}`;
-});
