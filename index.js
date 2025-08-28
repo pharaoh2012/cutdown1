@@ -155,13 +155,27 @@ window.addEventListener("load", async () => {
     restart();
 });
 
-function restart() {
+const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms))
+async function restart() {
     tts("开始")
     enableWakeLock();
     rundownIndex = 0;
     roundNumber = 0;
     beginTime = Date.now();
     clearInterval(countdownInterval);
+    const countdownText = document.getElementById("countdownText");
+    const countdown = document.getElementById("countdown");
+    countdown.style.color = '#e600ff';
+    countdownText.textContent = "准备开始";
+    tts('ready')
+    for (let i = 3; i > 0; i--) {
+        countdownText.textContent = "准备开始：" + i;
+        countdown.textContent = i;
+        tts(i);
+        await sleep(1000);
+    }
+    tts('go')
+    await sleep(1000);
     startCountdown();
 }
 
