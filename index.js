@@ -1,7 +1,7 @@
 const COLORS = ["#FF0000", "#FFA500", "#FFFF00", "#008000", "#00FFFF", "#0000FF", "#800080",]
 let rundowns = [
-    { cd: 10, text: "吸气", color: "red" },
-    { cd: 10, text: "呼气", color: "green" },
+    { cd: 3, text: "吸气", color: "red" },
+    { cd: 3, text: "呼气", color: "green" },
     //  { cd: 5, text: "放松" },
 ];
 let MaxCountdown = 10;
@@ -108,13 +108,12 @@ function startCountdown() {
     // rundownIndex = 0;
     currentCount = rundowns[rundownIndex].cd;
     const countdownText = document.getElementById("countdownText");
-    const restartBtn = document.getElementById("restartBtn");
     const container = document.querySelector(".countdown-container");
     const progressCircle = document.querySelector(".progress-ring-circle");
 
     countdownText.textContent =
         rundowns[rundownIndex].text + rundowns[rundownIndex].cd + "秒";
-    tts(rundowns[rundownIndex].text)
+    tts(rundowns[rundownIndex].text + (roundNumber + 1))
     // restartBtn.classList.remove("show");
     container.classList.remove("finished");
     document.getElementById("countdown").style.color =
@@ -178,19 +177,21 @@ function restart() {
 // 添加语音播报开关点击事件
 window.addEventListener('load', () => {
     const ttsCheckbox = document.getElementById('ttsCheckbox');
-    
+
     ttsCheckbox.addEventListener('change', () => {
         isTts = ttsCheckbox.checked;
     });
 });
 
 function tts(text, options = {}) {
+    console.log('开始播放语音：', text);
     if (!isTts) return;
     // 1. 环境检测
     if (!('speechSynthesis' in window)) {
         console.error('浏览器不支持语音合成功能');
         return;
     }
+
 
     // 2. 参数合并与默认值设置
     const { rate = 1, pitch = 1, volume = 1, lang = 'zh-CN' } = options;
@@ -235,7 +236,7 @@ async function releaseWakeLock() {
 document.getElementById('ttsCheckbox').addEventListener('change', (event) => {
     isTts = event.target.checked;
     localStorage.setItem('isTts', isTts);
-    console.log('isTts:', isTts);   
+    console.log('isTts:', isTts);
 });
 
 document.getElementById('ttsCheckbox').checked = isTts;
